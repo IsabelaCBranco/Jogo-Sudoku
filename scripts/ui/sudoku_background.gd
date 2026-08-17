@@ -4,12 +4,12 @@ extends Control
 
 const COR_LINHA := Color(0.35, 0.42, 0.58, 0.1)
 const COR_LINHA_GROSSA := Color(0.45, 0.55, 0.75, 0.2)
-const LADO_CELULA := 72.0
+const LADO_CELULA := 56.0
 
 
 func _draw() -> void:
 	var lado := LADO_CELULA * 9.0
-	var origem := Vector2((size.x - lado) * 0.5, size.y * 0.08)
+	var origem := (size - Vector2(lado, lado)) * 0.5
 	for i in range(10):
 		var grossa := i % 3 == 0
 		var cor := COR_LINHA_GROSSA if grossa else COR_LINHA

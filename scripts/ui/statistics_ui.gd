@@ -43,6 +43,8 @@ func _criar_melhores() -> void:
 		var tempo := StatisticsSystem.get_melhor_tempo(dificuldade)
 		var pontuacao := StatisticsSystem.get_melhor_pontuacao(dificuldade)
 		var label := Label.new()
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD
 		label.text = "%s — melhor tempo: %s | melhor pontuação: %d" % [
 			DifficultyManager.get_nome(dificuldade),
 			_formatar_tempo(tempo) if tempo > 0 else "--:--",

@@ -21,7 +21,7 @@ grow_vertical = 2
 
 [node name="Card" type="PanelContainer" parent="Centro"]
 layout_mode = 2
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(460, 0)
 
 [node name="Margin" type="MarginContainer" parent="Centro/Card"]
 layout_mode = 2
@@ -47,53 +47,71 @@ layout_mode = 2
 [node name="Scroll" type="ScrollContainer" parent="Centro/Card/Margin/VBoxExterno"]
 layout_mode = 2
 size_flags_vertical = 3
-custom_minimum_size = Vector2(0, 400)
+custom_minimum_size = Vector2(0, 320)
 horizontal_scroll_mode = 0
 
 [node name="VBox" type="VBoxContainer" parent="Centro/Card/Margin/VBoxExterno/Scroll"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="LabelIniciadas" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelConcluidas" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelVencidas" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelPerdidas" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelTempoMedio" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelMediaErros" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="LabelDicas" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
 
 [node name="Separador2" type="HSeparator" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 layout_mode = 2
 
 [node name="TituloMelhores" type="Label" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Melhores resultados por dificuldade"
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
 
 [node name="Melhores" type="VBoxContainer" parent="Centro/Card/Margin/VBoxExterno/Scroll/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 4
 
 [node name="Separador3" type="HSeparator" parent="Centro/Card/Margin/VBoxExterno"]

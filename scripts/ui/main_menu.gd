@@ -15,6 +15,7 @@ var navegador: Callable = _navegar_padrao
 
 
 func _ready() -> void:
+	_ajustar_janela_a_tela()
 	_preencher_dificuldades()
 	_ajustar_continuar()
 	%BtnContinuar.pressed.connect(continuar_partida)
@@ -26,6 +27,26 @@ func _ready() -> void:
 		%BtnContinuar.grab_focus()
 	else:
 		%OpcaoDificuldade.grab_focus()
+
+
+## Reduz a janela para caber na área utilizável da tela (ex.: notebooks com
+## tela baixa). Com o stretch "canvas_items", todo o conteúdo escala junto.
+func _ajustar_janela_a_tela() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	if DisplayServer.get_screen_count() <= 0:
+		return
+	var retangulo := DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	var janela := DisplayServer.window_get_size()
+	if janela.x <= 0 or janela.y <= 0 or retangulo.size.x <= 0 or retangulo.size.y <= 0:
+		return
+	var escala: float = min(1.0, float(retangulo.size.x) / float(janela.x), float(retangulo.size.y) / float(janela.y))
+	if escala >= 1.0:
+		return
+	var novo := Vector2i(Vector2(janela) * escala)
+	if novo.x < 100 or novo.y < 100:
+		return
+	DisplayServer.window_set_size(novo)
 
 
 func _preencher_dificuldades() -> void:

@@ -116,7 +116,7 @@ func test_botao_numpad_insere_valor() -> void:
 	controller.mover_selecao(alvo - controller.get_celula_selecionada())
 
 	var valor: int = controller.board.get_valor_solucao(alvo.x, alvo.y)
-	var botao := hud.get_node("Margin/VBox/Numpad/BtnNum" + str(valor)) as Button
+	var botao := hud.get_node("Layout/Principal/Controls/Margin/VBox/Numpad/BtnNum" + str(valor)) as Button
 	botao.emit_signal("pressed")
 
 	assert_eq(controller.board.get_valor(alvo.x, alvo.y), valor)
@@ -130,10 +130,10 @@ func test_hud_expoe_informacoes() -> void:
 
 	assert_eq(controller.get_erros(), 0)
 	assert_eq(controller.get_progresso(), controller.board.contar_preenchidas())
-	assert_eq(hud.get_node("Margin/VBox/Numpad").get_child_count(), 9)
+	assert_eq(hud.get_node("Layout/Principal/Controls/Margin/VBox/Numpad").get_child_count(), 9)
 	assert_eq(
-		hud.get_node("Margin/VBox/Info/LabelProgresso").text,
-		"%d/81" % controller.get_progresso()
+		hud.get_node("Layout/Principal/Header/Margin/HBox/LabelPontos").text,
+		str(controller.get_pontuacao())
 	)
 
 
@@ -341,7 +341,7 @@ func test_botao_reiniciar_do_hud_abre_dialogo() -> void:
 	await wait_physics_frames(2)
 	var controller := jogo as GameController
 	var hud := jogo.get_node("HUD")
-	var botao := hud.get_node("Margin/VBox/LinhaD/BtnReiniciar") as Button
+	var botao := hud.get_node("Layout/Principal/Controls/Margin/VBox/LinhaD/BtnReiniciar") as Button
 
 	botao.emit_signal("pressed")
 
@@ -450,3 +450,124 @@ func test_botao_reiniciar_mesmo_fecha_pause_e_dialogo() -> void:
 	assert_false(overlay.visible)
 	assert_false(controller.esta_pausado())
 	assert_false(jogo.get_node("PauseOverlay").visible)
+
+
+# --- Seleção múltipla (toque) ---
+
+func _celulas_vazias_editaveis(controller: GameController) -> Array[Vector2i]:
+	var resultado: Array[Vector2i] = []
+	for l in SudokuBoard.TAMANHO:
+		for c in SudokuBoard.TAMANHO:
+			if not controller.board.esta_bloqueada(l, c) and controller.board.esta_vazia(l, c):
+				resultado.append(Vector2i(l, c))
+	return resultado
+
+
+func _duas_celulas_com_mesma_solucao(controller: GameController) -> Array[Vector2i]:
+	for a in _celulas_vazias_editaveis(controller):
+		for b in _celulas_vazias_editaveis(controller):
+			if a == b:
+				continue
+			if controller.board.get_valor_solucao(a.x, a.y) == controller.board.get_valor_solucao(b.x, b.y):
+				return [a, b]
+	return []
+
+
+func _selecionar_exatamente(controller: GameController, alvos: Array[Vector2i]) -> void:
+	for pos in controller.get_celulas_selecionadas().duplicate():
+		if not alvos.has(pos):
+			controller.alternar_selecao(pos)
+	for pos in alvos:
+		if not controller.get_celulas_selecionadas().has(pos):
+			controller.alternar_selecao(pos)
+	assert_eq(controller.get_celulas_selecionadas(), alvos)
+
+
+func test_tocar_alterna_celulas_na_selecao_multi() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	assert_eq(controller.get_celulas_selecionadas(), [Vector2i(0, 0)])
+
+	controller.alternar_selecao(Vector2i(2, 4))
+	assert_eq(controller.get_celulas_selecionadas(), [Vector2i(0, 0), Vector2i(2, 4)])
+	assert_eq(controller.get_celula_selecionada(), Vector2i(2, 4))
+
+	controller.alternar_selecao(Vector2i(0, 0))
+	assert_eq(controller.get_celulas_selecionadas(), [Vector2i(2, 4)])
+
+	controller.alternar_selecao(Vector2i(2, 4))
+	assert_true(controller.get_celulas_selecionadas().is_empty())
+	assert_eq(controller.get_celula_selecionada(), Vector2i(-1, -1))
+
+
+func test_mover_selecao_limpa_selecao_multi() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	controller.alternar_selecao(Vector2i(3, 3))
+	controller.mover_selecao(Vector2i(1, 0))
+
+	assert_eq(controller.get_celulas_selecionadas(), [Vector2i(4, 3)])
+
+
+func test_inserir_numero_aplica_a_todas_selecionadas() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	var alvos := _duas_celulas_com_mesma_solucao(controller)
+	assert_false(alvos.is_empty(), "Puzzle deve ter duas células vazias com a mesma solução.")
+	var valor: int = controller.board.get_valor_solucao(alvos[0].x, alvos[0].y)
+
+	_selecionar_exatamente(controller, alvos)
+	assert_true(controller.inserir_numero(valor))
+
+	for pos in alvos:
+		assert_eq(controller.board.get_valor(pos.x, pos.y), valor)
+		assert_false(controller.board.get_celula(pos.x, pos.y).tem_erro)
+
+	assert_true(controller.desfazer())
+	for pos in alvos:
+		assert_true(controller.board.esta_vazia(pos.x, pos.y))
+
+
+func test_apagar_aplica_a_todas_selecionadas() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	var alvos := _duas_celulas_com_mesma_solucao(controller)
+	assert_false(alvos.is_empty())
+	var valor: int = controller.board.get_valor_solucao(alvos[0].x, alvos[0].y)
+	_selecionar_exatamente(controller, alvos)
+	assert_true(controller.inserir_numero(valor))
+
+	assert_true(controller.apagar_celula())
+	for pos in alvos:
+		assert_true(controller.board.esta_vazia(pos.x, pos.y))
+
+
+func test_inserir_numero_sem_selecao_nao_faz_nada() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	controller.alternar_selecao(Vector2i(0, 0))
+	controller.alternar_selecao(Vector2i(0, 0))
+
+	assert_false(controller.inserir_numero(1))
+	assert_eq(controller.get_progresso(), controller.board.contar_preenchidas())
+
+
+func test_serializar_partida_guarda_selecao_multi() -> void:
+	var jogo := _instanciar()
+	await wait_physics_frames(2)
+	var controller := jogo as GameController
+
+	controller.alternar_selecao(Vector2i(5, 6))
+
+	var dados := controller.serializar_partida()
+	assert_eq(dados["celulas_selecionadas"], [[0, 0], [5, 6]])

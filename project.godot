@@ -27,18 +27,23 @@ AudioManager="*res://scripts/systems/audio_manager.gd"
 
 [display]
 
+window/size/viewport_width=540
+window/size/viewport_height=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [gui]
 
 theme/custom="res://theme/theme.tres"
 
-[editor_plugins]
+[input_devices]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+pointing/emulate_mouse_from_touch=false
 
 [physics]
 
@@ -46,5 +51,5 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [rendering]
 
-environment/defaults/default_clear_color=Color(0.09, 0.11, 0.16, 1)
 rendering_device/driver.windows="d3d12"
+environment/defaults/default_clear_color=Color(0.09, 0.11, 0.16, 1)

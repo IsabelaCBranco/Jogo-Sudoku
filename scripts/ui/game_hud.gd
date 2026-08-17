@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 ## Interface da partida (apresentação apenas).
 ##
 ## Observa os sinais do GameController e atualiza rótulos e botões; os botões
@@ -36,6 +36,7 @@ func _ready() -> void:
 		var botao := botao_no as Button
 		botao.pressed.connect(_controller.inserir_numero.bind(int(botao.get_meta("valor"))))
 	_sem_foco_nos_botoes()
+	%LabelAjuda.visible = not OS.has_feature("mobile")
 
 
 ## Os botões do HUD não devem capturar o foco do teclado: ao clicar em um
@@ -53,8 +54,6 @@ func _ao_estado_alterado() -> void:
 	_ao_pontuacao_alterada(_controller.get_pontuacao())
 	_ao_modo_anotacao_alterado(_controller.get_modo_anotacao())
 	_ao_historico_alterado(_controller.pode_desfazer(), _controller.pode_refazer())
-	%LabelProgresso.text = "%d/%d" % [_controller.get_progresso(), SudokuBoard.TAMANHO * SudokuBoard.TAMANHO]
-	%LabelErros.text = str(_controller.get_erros())
 	%LabelRecorde.text = _formatar_recorde()
 	%LabelStatus.text = ""
 	_ao_dicas_alteradas()

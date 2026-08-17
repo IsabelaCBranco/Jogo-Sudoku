@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://db5kk1ic8qnfp"]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" uid="uid://bf8yjf6bops31" path="res://scripts/game/game_controller.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/sudoku_board/sudoku_board.tscn" id="2"]
@@ -7,339 +7,331 @@
 [ext_resource type="Script" uid="uid://bhy5734se240m" path="res://scripts/ui/result_overlay.gd" id="5"]
 [ext_resource type="Script" uid="uid://cbxwh67gfb5dk" path="res://scripts/ui/restart_overlay.gd" id="6"]
 
-[node name="Game" type="Node" unique_id=148128192]
+[node name="Game" type="Node"]
 script = ExtResource("1")
 
-[node name="SudokuBoard" parent="." unique_id=1564160940 instance=ExtResource("2")]
+[node name="HUD" type="Control" parent="."]
 layout_mode = 3
-offset_left = 364.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
-
-[node name="HUD" type="PanelContainer" parent="." unique_id=1127839968]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 356.0
-offset_bottom = 660.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("3")
 controller_path = NodePath("..")
 
-[node name="Margin" type="MarginContainer" parent="HUD" unique_id=1214272628]
-layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
+[node name="Layout" type="MarginContainer" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="VBox" type="VBoxContainer" parent="HUD/Margin" unique_id=1664815106]
+[node name="Principal" type="VBoxContainer" parent="HUD/Layout"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
-[node name="Titulo" type="Label" parent="HUD/Margin/VBox" unique_id=350199314]
+[node name="Header" type="PanelContainer" parent="HUD/Layout/Principal"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="HUD/Layout/Principal/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Layout/Principal/Header/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LabelDificuldade" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.72, 1, 1)
-theme_override_font_sizes/font_size = 30
-text = "Sudoku"
-horizontal_alignment = 1
-
-[node name="LabelDificuldade" type="Label" parent="HUD/Margin/VBox" unique_id=596558681]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 20
 text = "Fácil"
-horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Separador" type="HSeparator" parent="HUD/Margin/VBox" unique_id=1170891741]
-layout_mode = 2
-
-[node name="Info" type="GridContainer" parent="HUD/Margin/VBox" unique_id=717157250]
+[node name="VSpacer" type="Control" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 14
-theme_override_constants/v_separation = 2
-columns = 2
 
-[node name="CapTempo" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1700479458]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 15
-text = "Tempo"
-
-[node name="LabelTempo" type="Label" parent="HUD/Margin/VBox/Info" unique_id=773574607]
+[node name="LabelTempo" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "00:00"
-horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="CapVidas" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1789880898]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 15
-text = "Vidas"
-
-[node name="LabelVidas" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1070025109]
+[node name="LabelVidas" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.4, 0.45, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "♥♥♥"
-horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="CapPontos" type="Label" parent="HUD/Margin/VBox/Info" unique_id=113376075]
+[node name="CapPontos" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "Pontos"
+vertical_alignment = 1
 
-[node name="LabelPontos" type="Label" parent="HUD/Margin/VBox/Info" unique_id=495697378]
+[node name="LabelPontos" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "0"
-horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="CapRecorde" type="Label" parent="HUD/Margin/VBox/Info" unique_id=895997064]
+[node name="CapRecorde" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "Recorde"
+vertical_alignment = 1
 
-[node name="LabelRecorde" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1026134961]
+[node name="LabelRecorde" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "—"
-horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="CapProgresso" type="Label" parent="HUD/Margin/VBox/Info" unique_id=922242098]
+[node name="CapAnotacoes" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 15
-text = "Progresso"
+text = "Anot."
+vertical_alignment = 1
 
-[node name="LabelProgresso" type="Label" parent="HUD/Margin/VBox/Info" unique_id=72993681]
+[node name="LabelModo" type="Label" parent="HUD/Layout/Principal/Header/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "0/81"
-horizontal_alignment = 2
-
-[node name="CapErros" type="Label" parent="HUD/Margin/VBox/Info" unique_id=604096889]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 15
-text = "Erros"
-
-[node name="LabelErros" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1621431950]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.2, 0.2, 1)
-theme_override_font_sizes/font_size = 16
-text = "0"
-horizontal_alignment = 2
-
-[node name="CapAnotacoes" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1478644224]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 15
-text = "Anotações"
-
-[node name="LabelModo" type="Label" parent="HUD/Margin/VBox/Info" unique_id=1449324597]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 19
 text = "OFF"
-horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="Separador2" type="HSeparator" parent="HUD/Margin/VBox" unique_id=2131715409]
+[node name="BoardArea" type="Control" parent="HUD/Layout/Principal"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SudokuBoard" parent="HUD/Layout/Principal/BoardArea" instance=ExtResource("2")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Controls" type="PanelContainer" parent="HUD/Layout/Principal"]
 layout_mode = 2
 
-[node name="Numpad" type="GridContainer" parent="HUD/Margin/VBox" unique_id=551383921]
+[node name="Margin" type="MarginContainer" parent="HUD/Layout/Principal/Controls"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="HUD/Layout/Principal/Controls/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Numpad" type="GridContainer" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
-columns = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+columns = 9
 
-[node name="BtnNum1" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=1724874026]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum1" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "1"
 metadata/valor = 1
 
-[node name="BtnNum2" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=85823039]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum2" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "2"
 metadata/valor = 2
 
-[node name="BtnNum3" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=365190736]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum3" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "3"
 metadata/valor = 3
 
-[node name="BtnNum4" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=1235035172]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum4" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "4"
 metadata/valor = 4
 
-[node name="BtnNum5" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=737577996]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum5" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "5"
 metadata/valor = 5
 
-[node name="BtnNum6" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=817308281]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum6" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "6"
 metadata/valor = 6
 
-[node name="BtnNum7" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=108475517]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum7" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "7"
 metadata/valor = 7
 
-[node name="BtnNum8" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=1390651021]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum8" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "8"
 metadata/valor = 8
 
-[node name="BtnNum9" type="Button" parent="HUD/Margin/VBox/Numpad" unique_id=1643104253]
-custom_minimum_size = Vector2(102, 38)
+[node name="BtnNum9" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/Numpad"]
+custom_minimum_size = Vector2(0, 32)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 16
 text = "9"
 metadata/valor = 9
 
-[node name="LinhaA" type="HBoxContainer" parent="HUD/Margin/VBox" unique_id=926841247]
+[node name="LinhaA" type="HBoxContainer" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="BtnApagar" type="Button" parent="HUD/Margin/VBox/LinhaA" unique_id=933614797]
+[node name="BtnApagar" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaA"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Apagar"
 
-[node name="BtnNotas" type="Button" parent="HUD/Margin/VBox/LinhaA" unique_id=232751186]
+[node name="BtnNotas" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaA"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Anotações"
 
-[node name="LinhaB" type="HBoxContainer" parent="HUD/Margin/VBox" unique_id=1856277842]
+[node name="LinhaB" type="HBoxContainer" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="BtnDesfazer" type="Button" parent="HUD/Margin/VBox/LinhaB" unique_id=225399332]
+[node name="BtnDesfazer" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaB"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Desfazer"
 
-[node name="BtnRefazer" type="Button" parent="HUD/Margin/VBox/LinhaB" unique_id=1159289920]
+[node name="BtnRefazer" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaB"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Refazer"
 
-[node name="LinhaC" type="HBoxContainer" parent="HUD/Margin/VBox" unique_id=181801702]
+[node name="LinhaC" type="HBoxContainer" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="BtnDica1" type="Button" parent="HUD/Margin/VBox/LinhaC" unique_id=1953822629]
+[node name="BtnDica1" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaC"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Sinalizar"
 
-[node name="BtnDica2" type="Button" parent="HUD/Margin/VBox/LinhaC" unique_id=1506042728]
+[node name="BtnDica2" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaC"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Revelar"
 
-[node name="BtnDica3" type="Button" parent="HUD/Margin/VBox/LinhaC" unique_id=911965540]
+[node name="BtnDica3" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaC"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Preencher"
 
-[node name="LinhaD" type="HBoxContainer" parent="HUD/Margin/VBox" unique_id=326645646]
+[node name="LinhaD" type="HBoxContainer" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="BtnPausar" type="Button" parent="HUD/Margin/VBox/LinhaD" unique_id=1077601267]
+[node name="BtnPausar" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaD"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Pausar"
 
-[node name="BtnReiniciar" type="Button" parent="HUD/Margin/VBox/LinhaD" unique_id=1832702576]
+[node name="BtnReiniciar" type="Button" parent="HUD/Layout/Principal/Controls/Margin/VBox/LinhaD"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(102, 38)
+custom_minimum_size = Vector2(0, 30)
 size_flags_horizontal = 3
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 12
 text = "Reiniciar"
 
-[node name="LabelStatus" type="Label" parent="HUD/Margin/VBox" unique_id=1892740171]
+[node name="LabelStatus" type="Label" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 11
+text = ""
 horizontal_alignment = 1
 
-[node name="PauseOverlay" type="Control" parent="." unique_id=287129377]
+[node name="LabelAjuda" type="Label" parent="HUD/Layout/Principal/Controls/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "Setas/WASD: mover  •  1-9: número  •  N: anotações  •  H: dica  •  Z: desfazer  •  Y: refazer  •  R: reiniciar"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="PauseOverlay" type="Control" parent="."]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -350,7 +342,7 @@ grow_vertical = 2
 script = ExtResource("4")
 controller_path = NodePath("..")
 
-[node name="Dim" type="ColorRect" parent="PauseOverlay" unique_id=222718175]
+[node name="Dim" type="ColorRect" parent="PauseOverlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -360,7 +352,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="Centro" type="CenterContainer" parent="PauseOverlay" unique_id=426941631]
+[node name="Centro" type="CenterContainer" parent="PauseOverlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -368,60 +360,60 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Painel" type="PanelContainer" parent="PauseOverlay/Centro" unique_id=1353598166]
+[node name="Painel" type="PanelContainer" parent="PauseOverlay/Centro"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="PauseOverlay/Centro/Painel" unique_id=1924350033]
+[node name="Margin" type="MarginContainer" parent="PauseOverlay/Centro/Painel"]
 layout_mode = 2
 theme_override_constants/margin_left = 34
 theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 34
 theme_override_constants/margin_bottom = 30
 
-[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Centro/Painel/Margin" unique_id=1199997472]
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Centro/Painel/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Titulo" type="Label" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=800872041]
+[node name="Titulo" type="Label" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.72, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "Pausado"
 horizontal_alignment = 1
 
-[node name="Subtitulo" type="Label" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=1925562290]
+[node name="Subtitulo" type="Label" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "O jogo está pausado."
 horizontal_alignment = 1
 
-[node name="Separador" type="HSeparator" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=797400539]
+[node name="Separador" type="HSeparator" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 
-[node name="BtnRetomar" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=634722941]
+[node name="BtnRetomar" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Retomar"
 
-[node name="BtnReiniciarPausa" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=958370329]
+[node name="BtnReiniciarPausa" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Reiniciar"
 
-[node name="BtnMenuPausa" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox" unique_id=742731165]
+[node name="BtnMenuPausa" type="Button" parent="PauseOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Voltar ao Menu Inicial"
 
-[node name="RestartOverlay" type="Control" parent="." unique_id=997399896]
+[node name="RestartOverlay" type="Control" parent="."]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -432,7 +424,7 @@ grow_vertical = 2
 script = ExtResource("6")
 controller_path = NodePath("..")
 
-[node name="Dim" type="ColorRect" parent="RestartOverlay" unique_id=611887474]
+[node name="Dim" type="ColorRect" parent="RestartOverlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -442,7 +434,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="Centro" type="CenterContainer" parent="RestartOverlay" unique_id=653810242]
+[node name="Centro" type="CenterContainer" parent="RestartOverlay"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -450,36 +442,36 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Painel" type="PanelContainer" parent="RestartOverlay/Centro" unique_id=2021029202]
+[node name="Painel" type="PanelContainer" parent="RestartOverlay/Centro"]
 custom_minimum_size = Vector2(430, 0)
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="RestartOverlay/Centro/Painel" unique_id=1384226920]
+[node name="Margin" type="MarginContainer" parent="RestartOverlay/Centro/Painel"]
 layout_mode = 2
 theme_override_constants/margin_left = 34
 theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 34
 theme_override_constants/margin_bottom = 30
 
-[node name="VBox" type="VBoxContainer" parent="RestartOverlay/Centro/Painel/Margin" unique_id=711649718]
+[node name="VBox" type="VBoxContainer" parent="RestartOverlay/Centro/Painel/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Titulo" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=1735134416]
+[node name="Titulo" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.72, 1, 1)
 theme_override_font_sizes/font_size = 32
 text = "Reiniciar jogo?"
 horizontal_alignment = 1
 
-[node name="Descricao" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=1249949272]
+[node name="Descricao" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.66, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "O progresso atual será perdido."
 horizontal_alignment = 1
 
-[node name="LabelProgressoReinicio" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=1506707332]
+[node name="LabelProgressoReinicio" type="Label" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.3, 0.35, 1)
@@ -487,26 +479,26 @@ theme_override_font_sizes/font_size = 16
 text = "0/81 preenchidos"
 horizontal_alignment = 1
 
-[node name="Separador" type="HSeparator" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=1453610791]
+[node name="Separador" type="HSeparator" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 layout_mode = 2
 
-[node name="BtnReiniciarNovo" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=672095289]
+[node name="BtnReiniciarNovo" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Novo puzzle"
 
-[node name="BtnReiniciarMesmo" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=405429273]
+[node name="BtnReiniciarMesmo" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Reiniciar mesmo puzzle"
 
-[node name="BtnCancelarReinicio" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox" unique_id=124882778]
+[node name="BtnCancelarReinicio" type="Button" parent="RestartOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_font_sizes/font_size = 19
 text = "Cancelar"
@@ -662,28 +654,14 @@ theme_override_font_sizes/font_size = 16
 
 [node name="BtnJogarNovamente" type="Button" parent="ResultOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "Jogar novamente"
 theme_override_font_sizes/font_size = 19
 
 [node name="BtnMenuResultado" type="Button" parent="ResultOverlay/Centro/Painel/Margin/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "Menu"
 theme_override_font_sizes/font_size = 19
-
-[node name="LabelAjuda" type="Label" parent="." unique_id=1259173764]
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -38.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "Setas/WASD: mover  •  1-9: número  •  N: anotações  •  H: dica  •  Z: desfazer  •  Y: refazer  •  R: reiniciar"
-horizontal_alignment = 1

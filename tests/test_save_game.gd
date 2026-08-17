@@ -31,6 +31,17 @@ func _primeira_celula_editavel_vazia(board: SudokuBoard) -> Vector2i:
 	return Vector2i(-1, -1)
 
 
+func _segunda_celula_editavel_vazia(board: SudokuBoard, diferente_de: Vector2i) -> Vector2i:
+	for l in SudokuBoard.TAMANHO:
+		for c in SudokuBoard.TAMANHO:
+			var pos := Vector2i(l, c)
+			if pos == diferente_de:
+				continue
+			if not board.esta_bloqueada(l, c) and board.esta_vazia(l, c):
+				return pos
+	return Vector2i(-1, -1)
+
+
 func _mover_selecao_para(controller: GameController, alvo: Vector2i) -> void:
 	var atual: Vector2i = controller.get_celula_selecionada()
 	var delta := alvo - atual
@@ -114,6 +125,10 @@ func test_round_trip_restaura_estado_completo() -> void:
 	jogo_a.inserir_numero(board_a.get_valor_solucao(alvo.x, alvo.y))
 	jogo_a.desfazer()
 
+	var alvo_segundo := _segunda_celula_editavel_vazia(board_a, alvo)
+	assert_ne(alvo_segundo, Vector2i(-1, -1))
+	jogo_a.alternar_selecao(alvo_segundo)
+
 	jogo_a.salvar_partida()
 	var tabuleiro_esperado := board_a.get_tabuleiro_atual()
 	var notas_esperadas: Array = []
@@ -146,7 +161,8 @@ func test_round_trip_restaura_estado_completo() -> void:
 	assert_eq(jogo_b.get_modo_anotacao(), true)
 	assert_eq(jogo_b.pode_desfazer(), pode_desfazer)
 	assert_eq(jogo_b.pode_refazer(), pode_refazer)
-	assert_eq(jogo_b.get_celula_selecionada(), alvo)
+	assert_eq(jogo_b.get_celula_selecionada(), alvo_segundo)
+	assert_eq(jogo_b.get_celulas_selecionadas(), [alvo, alvo_segundo])
 
 
 func test_continuar_preserva_undo_redo() -> void:

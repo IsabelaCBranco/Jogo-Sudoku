@@ -8,6 +8,7 @@ extends Node
 
 signal estado_alterado
 signal selecao_alterada(pos: Vector2i)
+signal selecoes_alteradas(celulas: Array)
 signal vitoria(pontos: int)
 signal derrota
 signal vida_alterada(vidas: int)
@@ -37,6 +38,7 @@ var history: MoveHistory
 var dificuldade: int = DifficultyManager.Dificuldade.FACIL
 
 var _celula_selecionada := Vector2i(0, 0)
+var _celulas_selecionadas: Array[Vector2i] = []
 var _modo_anotacao: bool = false
 var _pausado: bool = false
 var _terminado: bool = false
@@ -116,15 +118,19 @@ func _conectar_sistemas() -> void:
 
 
 func _conectar_view() -> void:
-	var no_view := get_node_or_null("SudokuBoard")
+	var no_view := find_child("SudokuBoard", true, false)
 	if not no_view is SudokuBoardView:
 		return
 	var view := no_view as SudokuBoardView
 	view.configurar(board)
 	if not view.celula_clicada.is_connected(_selecionar_pela_view):
 		view.celula_clicada.connect(_selecionar_pela_view)
+	if not view.celula_tocada_toggle.is_connected(_alternar_pela_view):
+		view.celula_tocada_toggle.connect(_alternar_pela_view)
 	if not selecao_alterada.is_connected(view.definir_selecao):
 		selecao_alterada.connect(view.definir_selecao)
+	if not selecoes_alteradas.is_connected(view.definir_selecoes):
+		selecoes_alteradas.connect(view.definir_selecoes)
 	if not modo_anotacao_alterado.is_connected(view.definir_modo_anotacao):
 		modo_anotacao_alterado.connect(view.definir_modo_anotacao)
 	if not dica_destacada.is_connected(view.destacar_celula):
@@ -134,10 +140,15 @@ func _conectar_view() -> void:
 	if not estado_alterado.is_connected(view.queue_redraw):
 		estado_alterado.connect(view.queue_redraw)
 	view.definir_selecao(_celula_selecionada)
+	view.definir_selecoes(_celulas_selecionadas)
 
 
 func _selecionar_pela_view(linha: int, coluna: int) -> void:
 	_selecionar(Vector2i(linha, coluna))
+
+
+func _alternar_pela_view(linha: int, coluna: int) -> void:
+	alternar_selecao(Vector2i(linha, coluna))
 
 
 # --- Persistência da partida ---
@@ -152,6 +163,7 @@ func serializar_partida() -> Dictionary:
 		"originais": board.get_mascara_originais(),
 		"anotacoes": _serializar_anotacoes(),
 		"celula_selecionada": [_celula_selecionada.x, _celula_selecionada.y],
+		"celulas_selecionadas": _serializar_celulas_selecionadas(),
 		"modo_anotacao": _modo_anotacao,
 		"pausado": _pausado,
 		"terminado": _terminado,
@@ -196,11 +208,16 @@ func continuar_partida() -> bool:
 	history.carregar_estado(dados.get("historico", {}))
 
 	_restaurar_anotacoes(dados.get("anotacoes", []))
+	_celulas_selecionadas = _restaurar_celulas_selecionadas(dados.get("celulas_selecionadas", []))
 	var selecao: Variant = dados.get("celula_selecionada", [0, 0])
+	var primaria := Vector2i.ZERO
 	if selecao is Array and (selecao as Array).size() >= 2:
-		_celula_selecionada = Vector2i(int(selecao[0]), int(selecao[1]))
-	else:
-		_celula_selecionada = Vector2i.ZERO
+		primaria = Vector2i(int(selecao[0]), int(selecao[1]))
+	if _celulas_selecionadas.is_empty():
+		_celulas_selecionadas = [primaria]
+	elif not _celulas_selecionadas.has(primaria):
+		primaria = _celulas_selecionadas.back()
+	_celula_selecionada = primaria
 	_modo_anotacao = bool(dados.get("modo_anotacao", false))
 	_pausado = bool(dados.get("pausado", false))
 	_terminado = bool(dados.get("terminado", false))
@@ -230,6 +247,23 @@ func _serializar_anotacoes() -> Array:
 			fileira.append(board.get_anotacoes(l, c))
 		notas.append(fileira)
 	return notas
+
+
+func _serializar_celulas_selecionadas() -> Array:
+	var lista: Array = []
+	for pos in _celulas_selecionadas:
+		lista.append([pos.x, pos.y])
+	return lista
+
+
+func _restaurar_celulas_selecionadas(dados: Variant) -> Array[Vector2i]:
+	var lista: Array[Vector2i] = []
+	if not dados is Array:
+		return lista
+	for item in dados:
+		if item is Array and (item as Array).size() >= 2:
+			lista.append(Vector2i(int(item[0]), int(item[1])))
+	return lista
 
 
 func _restaurar_anotacoes(notas: Variant) -> void:
@@ -272,39 +306,58 @@ func inserir_numero(valor: int) -> bool:
 	if valor < 1 or valor > 9:
 		return false
 
-	var pos := _celula_selecionada
-	if _modo_anotacao and GameSettings.anotacoes_ativadas:
-		return _alternar_anotacao(pos, valor)
-
-	if board.esta_bloqueada(pos.x, pos.y):
+	var alvos := _celulas_selecionadas.duplicate()
+	if alvos.is_empty():
 		return false
+	if _modo_anotacao and GameSettings.anotacoes_ativadas:
+		return _alternar_anotacao_em(valor, alvos)
 
 	var antes := history.snapshot()
-	if board.get_valor(pos.x, pos.y) == valor:
-		if not board.remover_valor(pos.x, pos.y):
-			return false
-		AudioManager.tocar_efeito(AudioManager.Tipo.APAGAR)
-	else:
-		if not board.definir_valor(pos.x, pos.y, valor):
-			return false
-		if not board.get_celula(pos.x, pos.y).tem_erro:
-			AudioManager.tocar_efeito(AudioManager.Tipo.INSERIR)
+	var tipo_audio := AudioManager.Tipo.NENHUM
+	for pos in alvos:
+		if _terminado:
+			break
+		match _aplicar_valor_em(pos, valor):
+			1:
+				if not board.get_celula(pos.x, pos.y).tem_erro \
+						and tipo_audio == AudioManager.Tipo.NENHUM:
+					tipo_audio = AudioManager.Tipo.INSERIR
+			2:
+				if tipo_audio != AudioManager.Tipo.INSERIR:
+					tipo_audio = AudioManager.Tipo.APAGAR
+	if tipo_audio == AudioManager.Tipo.NENHUM:
+		return false
+	AudioManager.tocar_efeito(tipo_audio)
 	history.registrar(antes)
 	estado_alterado.emit()
 	return true
 
 
+## Aplica um valor definitivo a uma célula. Retorna 0 (nada), 1 (inserido)
+## ou 2 (apagado por ser o mesmo valor da célula).
+func _aplicar_valor_em(pos: Vector2i, valor: int) -> int:
+	if board.esta_bloqueada(pos.x, pos.y):
+		return 0
+	if board.get_valor(pos.x, pos.y) == valor:
+		return 2 if board.remover_valor(pos.x, pos.y) else 0
+	return 1 if board.definir_valor(pos.x, pos.y, valor) else 0
+
+
 func apagar_celula() -> bool:
 	if _terminado or _pausado or board == null:
 		return false
-	var pos := _celula_selecionada
-	if board.esta_bloqueada(pos.x, pos.y):
-		return false
-	if board.esta_vazia(pos.x, pos.y):
-		return false
 
+	var alvos := _celulas_selecionadas.duplicate()
 	var antes := history.snapshot()
-	if not board.remover_valor(pos.x, pos.y):
+	var apagou := false
+	for pos in alvos:
+		if _terminado:
+			break
+		if board.esta_bloqueada(pos.x, pos.y) or board.esta_vazia(pos.x, pos.y):
+			continue
+		if board.remover_valor(pos.x, pos.y):
+			apagou = true
+	if not apagou:
 		return false
 	AudioManager.tocar_efeito(AudioManager.Tipo.APAGAR)
 	history.registrar(antes)
@@ -432,13 +485,18 @@ func alternar_modo_anotacao() -> void:
 
 
 func mover_selecao(direcao: Vector2i) -> void:
-	_selecionar(_celula_selecionada + direcao)
+	var base := _celula_selecionada if _celula_selecionada.x >= 0 else Vector2i.ZERO
+	_selecionar(base + direcao)
 
 
 # --- Acessores para a UI ---
 
 func get_celula_selecionada() -> Vector2i:
 	return _celula_selecionada
+
+
+func get_celulas_selecionadas() -> Array[Vector2i]:
+	return _celulas_selecionadas.duplicate()
 
 
 func get_modo_anotacao() -> bool:
@@ -545,27 +603,56 @@ func _ao_dicas_alteradas() -> void:
 
 # --- Internos ---
 
-func _alternar_anotacao(pos: Vector2i, valor: int) -> bool:
-	var celula := board.get_celula(pos.x, pos.y)
-	if celula.original or not celula.esta_vazia():
-		return false
-
+## Alterna anotações em todas as células selecionadas.
+func _alternar_anotacao_em(valor: int, alvos: Array[Vector2i]) -> bool:
 	var antes := history.snapshot()
-	if board.tem_anotacao(pos.x, pos.y, valor):
-		board.remover_anotacao(pos.x, pos.y, valor)
-	else:
-		board.adicionar_anotacao(pos.x, pos.y, valor)
+	var alterou := false
+	for pos in alvos:
+		if _terminado:
+			break
+		var celula := board.get_celula(pos.x, pos.y)
+		if celula.original or not celula.esta_vazia():
+			continue
+		if board.tem_anotacao(pos.x, pos.y, valor):
+			board.remover_anotacao(pos.x, pos.y, valor)
+		else:
+			board.adicionar_anotacao(pos.x, pos.y, valor)
+		alterou = true
+	if not alterou:
+		return false
 	history.registrar(antes)
 	estado_alterado.emit()
 	return true
 
 
+## Seleciona apenas uma célula, limpando qualquer seleção múltipla
+## (mouse e navegação por teclado).
 func _selecionar(pos: Vector2i) -> void:
 	if pos.x < 0 or pos.x >= SudokuBoard.TAMANHO or pos.y < 0 or pos.y >= SudokuBoard.TAMANHO:
 		return
 	_celula_selecionada = pos
+	_celulas_selecionadas = [pos]
 	AudioManager.tocar_efeito(AudioManager.Tipo.SELECIONAR)
 	selecao_alterada.emit(pos)
+	selecoes_alteradas.emit(_celulas_selecionadas)
+
+
+## Alterna uma célula na seleção múltipla (toque no mobile): adiciona se
+## ausente ou remove se já selecionada. A última adicionada vira a primária.
+func alternar_selecao(pos: Vector2i) -> void:
+	if pos.x < 0 or pos.x >= SudokuBoard.TAMANHO or pos.y < 0 or pos.y >= SudokuBoard.TAMANHO:
+		return
+	if _celulas_selecionadas.has(pos):
+		_celulas_selecionadas.erase(pos)
+		if _celula_selecionada == pos:
+			_celula_selecionada = _celulas_selecionadas.back() \
+				if not _celulas_selecionadas.is_empty() else Vector2i(-1, -1)
+	else:
+		_celulas_selecionadas.append(pos)
+		_celula_selecionada = pos
+	AudioManager.tocar_efeito(AudioManager.Tipo.SELECIONAR)
+	selecao_alterada.emit(_celula_selecionada)
+	selecoes_alteradas.emit(_celulas_selecionadas)
 
 
 func _unhandled_input(evento: InputEvent) -> void:
