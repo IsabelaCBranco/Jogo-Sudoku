@@ -17,8 +17,8 @@ signal pontuacao_alterada(pontos: int)
 signal historico_alterado(pode_desfazer: bool, pode_refazer: bool)
 signal modo_anotacao_alterado(ativo: bool)
 signal pausa_alterada(ativo: bool)
-signal dica_destacada(linha: int, coluna: int)
-signal dica_candidato(linha: int, coluna: int, valor: int)
+signal dica_destacada(pos: Vector2i)
+signal dica_candidato(pos: Vector2i, valor: int)
 signal dicas_alteradas
 signal reinicio_solicitado
 signal reinicio_cancelado
@@ -397,13 +397,13 @@ func pedir_dica(nivel: int) -> bool:
 			var celula := HintSystem.get_celula_destacavel(board, alvo)
 			if celula == HintSystem.CELULA_INVALIDA:
 				return false
-			dica_destacada.emit(celula.x, celula.y)
+			dica_destacada.emit(celula)
 		HintSystem.DICA_CANDIDATO:
 			var info := HintSystem.get_candidato(board, alvo)
 			if info.is_empty():
 				return false
 			var celula: Vector2i = info["celula"]
-			dica_candidato.emit(celula.x, celula.y, int(info["valor"]))
+			dica_candidato.emit(celula, int(info["valor"]))
 		HintSystem.DICA_RESOLVER:
 			var celula := HintSystem.get_celula_resolvivel(board, alvo)
 			if celula == HintSystem.CELULA_INVALIDA:
