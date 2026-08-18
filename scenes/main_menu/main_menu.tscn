@@ -90,6 +90,13 @@ text = "Muito Fácil"
 [node name="Separador2" type="HSeparator" parent="Centro/Card/Margin/VBox"]
 layout_mode = 2
 
+[node name="BtnIniciar" type="Button" parent="Centro/Card/Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+text = "Iniciar Jogo"
+theme_override_font_sizes/font_size = 19
+
 [node name="BtnContinuar" type="Button" parent="Centro/Card/Margin/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 46)
