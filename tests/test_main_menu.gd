@@ -39,11 +39,22 @@ func test_dropdown_tem_cinco_dificuldades() -> void:
 	assert_eq(dropdown.get_item_text(4), "Especialista")
 
 
-func test_selecionar_dificuldade_no_dropdown_navega() -> void:
+func test_selecionar_dificuldade_no_dropdown_nao_navega() -> void:
 	var menu := _instanciar_menu()
 	await wait_physics_frames(2)
 	var dropdown: OptionButton = menu.get_node("Centro/Card/Margin/VBox/OpcaoDificuldade")
 	dropdown.item_selected.emit(3)
+
+	assert_eq(GameSession.dificuldade_selecionada, 0)
+	assert_eq(_rotas, [])
+
+
+func test_iniciar_jogo_navega_com_dificuldade_selecionada() -> void:
+	var menu := _instanciar_menu()
+	await wait_physics_frames(2)
+	var dropdown: OptionButton = menu.get_node("Centro/Card/Margin/VBox/OpcaoDificuldade")
+	dropdown.selected = 3
+	menu.iniciar_jogo()
 
 	assert_eq(GameSession.dificuldade_selecionada, DifficultyManager.Dificuldade.DIFICIL)
 	assert_false(GameSession.continuar)
@@ -99,3 +110,12 @@ func test_continuar_visivel_com_partida_salva() -> void:
 	SaveManager.salvar_partida({"versao": 1})
 	menu._ajustar_continuar()
 	assert_true(menu.get_node("Centro/Card/Margin/VBox/BtnContinuar").visible)
+
+
+func test_botao_iniciar_existe_e_visivel() -> void:
+	var menu := _instanciar_menu()
+	await wait_physics_frames(2)
+	var botao: Button = menu.get_node("Centro/Card/Margin/VBox/BtnIniciar")
+	assert_not_null(botao)
+	assert_true(botao.visible)
+	assert_eq(botao.text, "Iniciar Jogo")

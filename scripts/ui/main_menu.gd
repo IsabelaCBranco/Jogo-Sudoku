@@ -17,15 +17,15 @@ var navegador: Callable = _navegar_padrao
 func _ready() -> void:
 	_preencher_dificuldades()
 	_ajustar_continuar()
+	%BtnIniciar.pressed.connect(iniciar_jogo)
 	%BtnContinuar.pressed.connect(continuar_partida)
 	%BtnConfiguracoes.pressed.connect(abrir_configuracoes)
 	%BtnEstatisticas.pressed.connect(abrir_estatisticas)
 	%BtnSair.pressed.connect(_ao_sair)
-	%OpcaoDificuldade.item_selected.connect(_ao_selecionar_dificuldade)
 	if %BtnContinuar.visible:
 		%BtnContinuar.grab_focus()
 	else:
-		%OpcaoDificuldade.grab_focus()
+		%BtnIniciar.grab_focus()
 
 
 func _preencher_dificuldades() -> void:
@@ -41,7 +41,12 @@ func _preencher_dificuldades() -> void:
 	%OpcaoDificuldade.selected = 0
 
 
-func _ao_selecionar_dificuldade(indice: int) -> void:
+func _ao_selecionar_dificuldade(_indice: int) -> void:
+	pass
+
+
+func iniciar_jogo() -> void:
+	var indice: int = %OpcaoDificuldade.selected
 	escolher_dificuldade(indice + 1)
 
 
