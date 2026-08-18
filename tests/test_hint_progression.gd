@@ -17,7 +17,7 @@ func after_each() -> void:
 
 func test_estoque_inicial_vazio() -> void:
 	assert_eq(HintProgression.get_total(), 0)
-	assert_false(HintProgression.pode_usar(HintSystem.DICA_DESTACAR))
+	assert_false(HintProgression.pode_usar(HintSystem.DICA_CONTAR))
 	assert_false(HintProgression.pode_usar(HintSystem.DICA_CANDIDATO))
 	assert_false(HintProgression.pode_usar(HintSystem.DICA_RESOLVER))
 
@@ -27,9 +27,9 @@ func test_vitoria_muito_facil_nao_concede() -> void:
 	assert_eq(HintProgression.get_total(), 0)
 
 
-func test_vitoria_facil_concede_sinalizar() -> void:
+func test_vitoria_facil_concede_contar() -> void:
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.FACIL)
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 1)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 1)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CANDIDATO), 0)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_RESOLVER), 0)
 
@@ -37,7 +37,7 @@ func test_vitoria_facil_concede_sinalizar() -> void:
 func test_vitoria_medio_concede_revelar() -> void:
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.MEDIO)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CANDIDATO), 1)
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 0)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 0)
 
 
 func test_vitoria_dificil_concede_preencher() -> void:
@@ -48,7 +48,7 @@ func test_vitoria_dificil_concede_preencher() -> void:
 
 func test_vitoria_especialista_concede_uma_de_cada() -> void:
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.ESPECIALISTA)
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 1)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 1)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CANDIDATO), 1)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_RESOLVER), 1)
 	assert_eq(HintProgression.get_total(), 3)
@@ -57,10 +57,10 @@ func test_vitoria_especialista_concede_uma_de_cada() -> void:
 func test_vitorias_acumulam_entre_partidas() -> void:
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.FACIL)
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.FACIL)
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 2)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 2)
 
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.MEDIO)
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 2)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 2)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CANDIDATO), 1)
 
 
@@ -72,7 +72,7 @@ func test_consumo_decrementa_estoque() -> void:
 
 
 func test_consumo_sem_estoque_bloqueado() -> void:
-	assert_false(HintProgression.consumir(HintSystem.DICA_DESTACAR))
+	assert_false(HintProgression.consumir(HintSystem.DICA_CONTAR))
 	assert_eq(HintProgression.get_total(), 0)
 
 
@@ -85,7 +85,7 @@ func test_registrar_vitoria_emite_sinal() -> void:
 func test_consumir_emite_sinal() -> void:
 	HintProgression.registrar_vitoria(DifficultyManager.Dificuldade.FACIL)
 	watch_signals(HintProgression)
-	HintProgression.consumir(HintSystem.DICA_DESTACAR)
+	HintProgression.consumir(HintSystem.DICA_CONTAR)
 	assert_signal_emitted(HintProgression, "dicas_alteradas")
 
 
@@ -97,7 +97,7 @@ func test_persistencia_restaura_estoque() -> void:
 	assert_eq(HintProgression.get_total(), 0)
 
 	HintProgression.carregar()
-	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_DESTACAR), 1)
+	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CONTAR), 1)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_CANDIDATO), 0)
 	assert_eq(HintProgression.get_disponiveis(HintSystem.DICA_RESOLVER), 1)
 

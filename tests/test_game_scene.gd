@@ -159,7 +159,7 @@ func test_pedir_dica_sem_estoque_bloqueada() -> void:
 	var jogo := _instanciar()
 	await wait_physics_frames(2)
 	var controller := jogo as GameController
-	assert_false(controller.pedir_dica(HintSystem.DICA_DESTACAR))
+	assert_false(controller.pedir_dica(HintSystem.DICA_CONTAR))
 	assert_false(controller.pedir_dica(HintSystem.DICA_CANDIDATO))
 	assert_false(controller.pedir_dica(HintSystem.DICA_RESOLVER))
 

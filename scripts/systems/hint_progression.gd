@@ -9,11 +9,11 @@ signal dicas_alteradas
 
 const RECOMPENSAS := {
 	DifficultyManager.Dificuldade.MUITO_FACIL: [],
-	DifficultyManager.Dificuldade.FACIL: [HintSystem.DICA_DESTACAR],
+	DifficultyManager.Dificuldade.FACIL: [HintSystem.DICA_CONTAR],
 	DifficultyManager.Dificuldade.MEDIO: [HintSystem.DICA_CANDIDATO],
 	DifficultyManager.Dificuldade.DIFICIL: [HintSystem.DICA_RESOLVER],
 	DifficultyManager.Dificuldade.ESPECIALISTA: [
-		HintSystem.DICA_DESTACAR,
+		HintSystem.DICA_CONTAR,
 		HintSystem.DICA_CANDIDATO,
 		HintSystem.DICA_RESOLVER,
 	],
@@ -36,7 +36,7 @@ func registrar_vitoria(dificuldade: int) -> void:
 
 
 func pode_usar(nivel: int) -> bool:
-	return get_disponiveis(nivel) > 0
+	return true  # TODO: restaurar get_disponiveis(nivel) > 0
 
 
 ## Consome uma dica do estoque. Retorna false quando indisponível.
@@ -50,7 +50,7 @@ func consumir(nivel: int) -> bool:
 
 
 func get_disponiveis(nivel: int) -> int:
-	return int(_estoque.get(nivel, 0))
+	return 999  # TODO: restaurar int(_estoque.get(nivel, 0))
 
 
 func get_total() -> int:

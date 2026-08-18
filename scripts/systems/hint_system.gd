@@ -6,12 +6,12 @@ extends RefCounted
 ## selecionada (alvo = Vector2i(-1, -1)), o sistema escolhe uma célula vazia
 ## editável aleatoriamente. Toda dica aplicada gera penalidade na pontuação.
 
-const DICA_DESTACAR: int = 1
+const DICA_CONTAR: int = 1
 const DICA_CANDIDATO: int = 2
 const DICA_RESOLVER: int = 3
 
 const NOMES_DICA := {
-	DICA_DESTACAR: "Sinalizar",
+	DICA_CONTAR: "Contar",
 	DICA_CANDIDATO: "Revelar",
 	DICA_RESOLVER: "Preencher",
 }
@@ -24,15 +24,18 @@ static func get_nome_dica(nivel: int) -> String:
 	return NOMES_DICA.get(nivel, "Desconhecida")
 
 
-## Sinalizar: retorna uma célula vazia determinável (1 candidato == solução).
-## Respeita o alvo quando ele é determinável; senão procura outra.
-static func get_celula_destacavel(board: SudokuBoard, alvo: Vector2i) -> Vector2i:
-	if _e_alvo_valido(board, alvo) and _e_determinavel(board, alvo):
-		return alvo
-	for celula in _celulas_vazias(board):
-		if _e_determinavel(board, celula):
-			return celula
-	return CELULA_INVALIDA
+## Contar: retorna { "celula": Vector2i, "quantidade": int } com a contagem
+## de candidatos válidos para uma célula vazia. Respeita o alvo quando válido;
+## senão procura outra célula vazia.
+static func get_contagem_candidatos(board: SudokuBoard, alvo: Vector2i) -> Dictionary:
+	var celula := _escolher_celula_alvo(board, alvo)
+	if celula == CELULA_INVALIDA:
+		return {}
+	var candidatos := _candidatos(board, celula)
+	return {
+		"celula": celula,
+		"quantidade": candidatos.size(),
+	}
 
 
 ## Revelar: retorna um dicionário { celula, valor } com a solução da célula.
@@ -64,14 +67,6 @@ static func _e_alvo_valido(board: SudokuBoard, alvo: Vector2i) -> bool:
 	if alvo == CELULA_INVALIDA:
 		return false
 	return board.esta_vazia(alvo.x, alvo.y) and not board.esta_bloqueada(alvo.x, alvo.y)
-
-
-## Uma célula é determinável quando possui exatamente um candidato válido
-## e esse candidato coincide com a solução.
-static func _e_determinavel(board: SudokuBoard, celula: Vector2i) -> bool:
-	var candidatos := _candidatos(board, celula)
-	return candidatos.size() == 1 \
-		and candidatos[0] == board.get_valor_solucao(celula.x, celula.y)
 
 
 static func _candidatos(board: SudokuBoard, celula: Vector2i) -> Array[int]:

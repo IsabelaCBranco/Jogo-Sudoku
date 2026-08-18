@@ -21,12 +21,12 @@ func test_dica_aplica_penalidade_por_nivel() -> void:
 	var score := ScoreSystem.new()
 	score.iniciar(DifficultyManager.Dificuldade.FACIL)
 	var base := score.get_pontuacao()
-	score.registrar_dica(HintSystem.DICA_DESTACAR)
-	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_DESTACAR])
+	score.registrar_dica(HintSystem.DICA_CONTAR)
+	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_CONTAR])
 	score.registrar_dica(HintSystem.DICA_CANDIDATO)
-	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_DESTACAR] - score.PENALIDADES_DICA[HintSystem.DICA_CANDIDATO])
+	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_CONTAR] - score.PENALIDADES_DICA[HintSystem.DICA_CANDIDATO])
 	score.registrar_dica(HintSystem.DICA_RESOLVER)
-	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_DESTACAR] - score.PENALIDADES_DICA[HintSystem.DICA_CANDIDATO] - score.PENALIDADES_DICA[HintSystem.DICA_RESOLVER])
+	assert_eq(score.get_pontuacao(), base - score.PENALIDADES_DICA[HintSystem.DICA_CONTAR] - score.PENALIDADES_DICA[HintSystem.DICA_CANDIDATO] - score.PENALIDADES_DICA[HintSystem.DICA_RESOLVER])
 
 
 func test_tempo_influencia_pontuacao() -> void:

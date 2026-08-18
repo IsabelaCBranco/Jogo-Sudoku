@@ -119,7 +119,7 @@ func test_round_trip_restaura_estado_completo() -> void:
 	jogo_a.alternar_modo_anotacao()
 	jogo_a.inserir_numero(board_a.get_valor_solucao(alvo_nota.x, alvo_nota.y))
 
-	jogo_a.pedir_dica(HintSystem.DICA_DESTACAR)
+	jogo_a.pedir_dica(HintSystem.DICA_CONTAR)
 
 	_mover_selecao_para(jogo_a, alvo)
 	jogo_a.inserir_numero(board_a.get_valor_solucao(alvo.x, alvo.y))

@@ -380,9 +380,9 @@ Quando um número definitivo for inserido:
 
 Implementar três dicas, cada uma com nome e comportamento próprios:
 
-### Dica — Sinalizar
+### Dica — Contar
 
-Destaca uma célula vazia determinável (apenas um candidato válido).
+Mostra a quantidade de candidatos válidos para uma célula vazia.
 
 ### Dica — Revelar
 
@@ -397,8 +397,8 @@ Preenche automaticamente uma célula com a solução.
 As dicas são desbloqueadas permanentemente ao vencer partidas. Cada vitória
 concede usos que se acumulam entre partidas e sessões:
 
-| Vitória em  | Sinalizar | Revelar | Preencher |
-| ----------- | --------- | ------- | --------- |
+| Vitória em  | Contar | Revelar | Preencher |
+| ----------- | ------ | ------- | --------- |
 | Muito Fácil | 0         | 0       | 0         |
 | Fácil       | +1        | 0       | 0         |
 | Médio       | 0         | +1      | 0         |
@@ -645,7 +645,7 @@ Testar obrigatoriamente:
 
 ## Dicas
 
-* Vitória no Fácil concede a Sinalizar.
+* Vitória no Fácil concede a Contar.
 * Vitória no Médio concede a Revelar.
 * Vitória no Difícil concede a Preencher.
 * Vitória no Especialista concede uma de cada tipo.

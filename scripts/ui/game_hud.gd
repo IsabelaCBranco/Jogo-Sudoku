@@ -27,7 +27,7 @@ func _ready() -> void:
 	%BtnApagar.pressed.connect(_controller.apagar_celula)
 	%BtnDesfazer.pressed.connect(_controller.desfazer)
 	%BtnRefazer.pressed.connect(_controller.refazer)
-	%BtnDica1.pressed.connect(_controller.pedir_dica.bind(HintSystem.DICA_DESTACAR))
+	%BtnDica1.pressed.connect(_controller.pedir_dica.bind(HintSystem.DICA_CONTAR))
 	%BtnDica2.pressed.connect(_controller.pedir_dica.bind(HintSystem.DICA_CANDIDATO))
 	%BtnDica3.pressed.connect(_controller.pedir_dica.bind(HintSystem.DICA_RESOLVER))
 	%BtnPausar.pressed.connect(_controller.alternar_pausa)
@@ -101,7 +101,7 @@ func _ao_historico_alterado(pode_desfazer: bool, pode_refazer: bool) -> void:
 
 
 func _ao_dicas_alteradas() -> void:
-	_atualizar_botao_dica(%BtnDica1, HintSystem.DICA_DESTACAR)
+	_atualizar_botao_dica(%BtnDica1, HintSystem.DICA_CONTAR)
 	_atualizar_botao_dica(%BtnDica2, HintSystem.DICA_CANDIDATO)
 	_atualizar_botao_dica(%BtnDica3, HintSystem.DICA_RESOLVER)
 
