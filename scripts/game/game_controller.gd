@@ -305,6 +305,8 @@ func inserir_numero(valor: int) -> bool:
 		return false
 	if valor < 1 or valor > 9:
 		return false
+	if board.contar_valor(valor) >= SudokuBoard.TAMANHO:
+		return false
 
 	var alvos := _celulas_selecionadas.duplicate()
 	if alvos.is_empty():
@@ -531,6 +533,10 @@ func get_erros() -> int:
 
 func get_progresso() -> int:
 	return board.contar_preenchidas()
+
+
+func get_contagem_valor(valor: int) -> int:
+	return board.contar_valor(valor)
 
 
 func pode_desfazer() -> bool:
