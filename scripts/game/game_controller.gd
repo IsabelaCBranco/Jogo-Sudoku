@@ -271,6 +271,8 @@ func inserir_numero(valor: int) -> bool:
 		return false
 	if valor < 1 or valor > 9:
 		return false
+	if board.contar_valor(valor) >= SudokuBoard.TAMANHO:
+		return false
 
 	var pos := _celula_selecionada
 	if _modo_anotacao and GameSettings.anotacoes_ativadas:
@@ -473,6 +475,10 @@ func get_erros() -> int:
 
 func get_progresso() -> int:
 	return board.contar_preenchidas()
+
+
+func get_contagem_valor(valor: int) -> int:
+	return board.contar_valor(valor)
 
 
 func pode_desfazer() -> bool:

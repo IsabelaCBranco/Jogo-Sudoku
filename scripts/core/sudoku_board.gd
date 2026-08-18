@@ -161,6 +161,15 @@ func esta_completa() -> bool:
 	return true
 
 
+## Quantidade de ocorrências de um dígito (1-9) no tabuleiro atual.
+func contar_valor(valor: int) -> int:
+	var total := 0
+	for celula in _celulas:
+		if celula.valor_atual == valor:
+			total += 1
+	return total
+
+
 ## Quantidade de células preenchidas (valores e anotações não contam).
 func contar_preenchidas() -> int:
 	var total := 0

@@ -58,6 +58,7 @@ func _ao_estado_alterado() -> void:
 	%LabelRecorde.text = _formatar_recorde()
 	%LabelStatus.text = ""
 	_ao_dicas_alteradas()
+	_atualizar_numpad()
 
 
 func _formatar_recorde() -> String:
@@ -111,3 +112,10 @@ func _atualizar_botao_dica(botao: Button, nivel: int) -> void:
 	var restantes := _controller.get_dicas_restantes(nivel)
 	botao.text = "%s (%d)" % [HintSystem.get_nome_dica(nivel), restantes]
 	botao.disabled = restantes <= 0
+
+
+func _atualizar_numpad() -> void:
+	for botao_no in %Numpad.get_children():
+		var botao := botao_no as Button
+		var valor: int = int(botao.get_meta("valor"))
+		botao.disabled = _controller.get_contagem_valor(valor) >= SudokuBoard.TAMANHO
