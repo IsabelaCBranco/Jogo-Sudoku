@@ -294,7 +294,7 @@ custom_minimum_size = Vector2(102, 38)
 size_flags_horizontal = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Sinalizar"
+text = "Contar"
 
 [node name="BtnDica2" type="Button" parent="HUD/Margin/VBox/LinhaC" unique_id=1506042728]
 unique_name_in_owner = true

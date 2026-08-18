@@ -61,31 +61,38 @@ func _board_completo() -> SudokuBoard:
 	return _board(SOLUCAO)
 
 
-# --- Destacar ---
+# --- Contar ---
 
-func test_destacar_celula_determinavel() -> void:
+func test_contar_celula_com_poucos_candidatos() -> void:
 	var board := _board_com_uma_vazia()
-	var resultado := HintSystem.get_celula_destacavel(board, Vector2i(0, 2))
-	assert_eq(resultado, Vector2i(0, 2))
+	var info := HintSystem.get_contagem_candidatos(board, Vector2i(0, 2))
+	assert_false(info.is_empty())
+	assert_eq(info["celula"], Vector2i(0, 2))
+	assert_eq(info["quantidade"], 1)
 
 
-func test_destacar_sem_alvo_retorna_determinavel() -> void:
+func test_contar_sem_alvo_retorna_celula_vazia() -> void:
 	var board := _board_com_uma_vazia()
-	var resultado := HintSystem.get_celula_destacavel(board, Vector2i(-1, -1))
-	assert_eq(resultado, Vector2i(0, 2))
+	var info := HintSystem.get_contagem_candidatos(board, Vector2i(-1, -1))
+	assert_false(info.is_empty())
+	assert_eq(info["celula"], Vector2i(0, 2))
+	assert_eq(info["quantidade"], 1)
 
 
-func test_destacar_ignora_alvo_nao_determinavel() -> void:
+func test_contar_ignora_alvo_bloqueado() -> void:
 	var board := _board()
-	var alvo := Vector2i(0, 2)
-	var resultado := HintSystem.get_celula_destacavel(board, alvo)
-	assert_ne(resultado, alvo)
+	var alvo := Vector2i(0, 0)
+	var info := HintSystem.get_contagem_candidatos(board, alvo)
+	assert_false(info.is_empty())
+	var celula: Vector2i = info["celula"]
+	assert_true(board.esta_vazia(celula.x, celula.y))
+	assert_gt(info["quantidade"], 0)
 
 
-func test_destacar_sem_celulas_retorna_invalida() -> void:
+func test_contar_sem_celulas_vazias_retorna_vazio() -> void:
 	var board := _board_completo()
-	var resultado := HintSystem.get_celula_destacavel(board, Vector2i(-1, -1))
-	assert_eq(resultado, HintSystem.CELULA_INVALIDA)
+	var info := HintSystem.get_contagem_candidatos(board, Vector2i(-1, -1))
+	assert_true(info.is_empty())
 
 
 # --- Candidato ---

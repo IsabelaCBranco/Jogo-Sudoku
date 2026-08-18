@@ -29,7 +29,8 @@ const DURACAO_FLASH_ERRO: float = 0.6
 var _board: SudokuBoard
 var _selecionada := Vector2i(-1, -1)
 var _modo_anotacao: bool = false
-var _celula_destaque := Vector2i(-1, -1)
+var _celula_contagem := Vector2i(-1, -1)
+var _contagem_valor: int = 0
 var _celula_candidato := Vector2i(-1, -1)
 var _candidato_valor: int = 0
 var _timer_dica: Timer
@@ -78,8 +79,9 @@ func definir_modo_anotacao(ativo: bool) -> void:
 	queue_redraw()
 
 
-func destacar_celula(pos: Vector2i) -> void:
-	_celula_destaque = pos
+func mostrar_contagem(pos: Vector2i, quantidade: int) -> void:
+	_celula_contagem = pos
+	_contagem_valor = quantidade
 	_agendar_limpeza_dica()
 	queue_redraw()
 
@@ -92,7 +94,8 @@ func mostrar_candidato(pos: Vector2i, valor: int) -> void:
 
 
 func limpar_dicas_visuais() -> void:
-	_celula_destaque = Vector2i(-1, -1)
+	_celula_contagem = Vector2i(-1, -1)
+	_contagem_valor = 0
 	_celula_candidato = Vector2i(-1, -1)
 	_candidato_valor = 0
 	queue_redraw()
@@ -177,8 +180,9 @@ func _desenhar_destaques(origem: Vector2, lado: float) -> void:
 				draw_rect(rect, COR_RELACIONADA)
 			elif _tem_mesmo_valor(Vector2i(l, c)):
 				draw_rect(rect, COR_IGUAL)
-	if _celula_destaque != Vector2i(-1, -1):
-		draw_rect(_retangulo(_celula_destaque, origem, lado), COR_DESTAQUE)
+	if _celula_contagem != Vector2i(-1, -1):
+		var rect := _retangulo(_celula_contagem, origem, lado)
+		_desenhar_numero(str(_contagem_valor), rect, lado, COR_DESTAQUE, true)
 	if _flash_erro_tempo > 0.0 and _flash_erro_pos != Vector2i(-1, -1):
 		var cor := COR_FLASH_ERRO
 		cor.a *= clampf(_flash_erro_tempo / DURACAO_FLASH_ERRO, 0.0, 1.0)

@@ -16,7 +16,7 @@ signal pontuacao_alterada(pontos: int)
 signal historico_alterado(pode_desfazer: bool, pode_refazer: bool)
 signal modo_anotacao_alterado(ativo: bool)
 signal pausa_alterada(ativo: bool)
-signal dica_destacada(pos: Vector2i)
+signal dica_contagem(pos: Vector2i, quantidade: int)
 signal dica_candidato(pos: Vector2i, valor: int)
 signal dicas_alteradas
 signal reinicio_solicitado
@@ -127,8 +127,8 @@ func _conectar_view() -> void:
 		selecao_alterada.connect(view.definir_selecao)
 	if not modo_anotacao_alterado.is_connected(view.definir_modo_anotacao):
 		modo_anotacao_alterado.connect(view.definir_modo_anotacao)
-	if not dica_destacada.is_connected(view.destacar_celula):
-		dica_destacada.connect(view.destacar_celula)
+	if not dica_contagem.is_connected(view.mostrar_contagem):
+		dica_contagem.connect(view.mostrar_contagem)
 	if not dica_candidato.is_connected(view.mostrar_candidato):
 		dica_candidato.connect(view.mostrar_candidato)
 	if not estado_alterado.is_connected(view.queue_redraw):
@@ -340,11 +340,13 @@ func pedir_dica(nivel: int) -> bool:
 	var alvo := _celula_selecionada
 
 	match nivel:
-		HintSystem.DICA_DESTACAR:
-			var celula := HintSystem.get_celula_destacavel(board, alvo)
-			if celula == HintSystem.CELULA_INVALIDA:
+		HintSystem.DICA_CONTAR:
+			var info := HintSystem.get_contagem_candidatos(board, alvo)
+			if info.is_empty():
 				return false
-			dica_destacada.emit(celula)
+			var celula: Vector2i = info["celula"]
+			var quantidade: int = info["quantidade"]
+			dica_contagem.emit(celula, quantidade)
 		HintSystem.DICA_CANDIDATO:
 			var info := HintSystem.get_candidato(board, alvo)
 			if info.is_empty():

@@ -17,7 +17,7 @@ const PENALIDADE_ERRO: int = 50
 const PENALIDADE_POR_SEGUNDO: int = 2
 const BONUS_POR_VIDA: int = 25
 const PENALIDADES_DICA := {
-	HintSystem.DICA_DESTACAR: 100,
+	HintSystem.DICA_CONTAR: 100,
 	HintSystem.DICA_CANDIDATO: 150,
 	HintSystem.DICA_RESOLVER: 200,
 }
