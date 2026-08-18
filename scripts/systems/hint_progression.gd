@@ -36,7 +36,7 @@ func registrar_vitoria(dificuldade: int) -> void:
 
 
 func pode_usar(nivel: int) -> bool:
-	return true  # TODO: restaurar get_disponiveis(nivel) > 0
+	return get_disponiveis(nivel) > 0
 
 
 ## Consome uma dica do estoque. Retorna false quando indisponível.
@@ -50,7 +50,7 @@ func consumir(nivel: int) -> bool:
 
 
 func get_disponiveis(nivel: int) -> int:
-	return 999  # TODO: restaurar int(_estoque.get(nivel, 0))
+	return int(_estoque.get(nivel, 0))
 
 
 func get_total() -> int:
@@ -75,9 +75,16 @@ func carregar() -> void:
 	if dados.is_empty():
 		return
 	_estoque.clear()
+	var alterado := false
 	var estoque: Dictionary = dados.get("estoque", {})
 	for nivel in estoque:
-		_estoque[int(nivel)] = int(estoque[nivel])
+		var valor: int = int(estoque[nivel])
+		if valor > 0:
+			_estoque[int(nivel)] = valor
+		else:
+			alterado = true
+	if alterado:
+		salvar()
 	dicas_alteradas.emit()
 
 
